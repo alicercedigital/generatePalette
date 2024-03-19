@@ -1,6 +1,11 @@
 interface IHexToRgb {
     (hex: string): string;
 }
+interface IParams {
+    color: string;
+    lightTextColor: string;
+    darkTextColor: string;
+}
 interface IColorComplete {
     DEFAULT: string;
     text: string;
@@ -13,14 +18,16 @@ interface IColorComplete {
         text: string;
     };
 }
+interface IGenerateColorPalette {
+    (params: IParams): IColorComplete;
+}
 declare const hexToRgb: IHexToRgb;
-declare const generatePalette: ({ colors, lightTextColor, darkTextColor, }: {
-    colors: {
-        [x: string]: string;
-    };
+declare const generateColor: IGenerateColorPalette;
+declare const generatePalette: <T extends {
+    [colorName: string]: string;
+}>({ colors, lightTextColor, darkTextColor, }: {
+    colors: T;
     lightTextColor?: string | undefined;
     darkTextColor?: string | undefined;
-}) => {
-    [colorName: string]: IColorComplete;
-};
-export { generatePalette, hexToRgb };
+}) => { [colorName in keyof T]: IColorComplete; };
+export { generatePalette, generateColor, hexToRgb };

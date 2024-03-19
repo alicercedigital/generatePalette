@@ -49,20 +49,24 @@ var generateVariantColors = function (_a) {
         },
     };
 };
-var generateColor = function (params) {
-    if (!/^#([A-Fa-f0-9]{6})$/.test(params.color)) {
-        throw new Error("Color must be a 6-character hex. Ex: #ffffff, Not: " +
-            String(params.color));
+var generateColor = function (_a) {
+    var color = _a.color, _b = _a.lightTextColor, lightTextColor = _b === void 0 ? "#FFFFFF" : _b, _c = _a.darkTextColor, darkTextColor = _c === void 0 ? "#000000" : _c;
+    if (!/^#([A-Fa-f0-9]{6})$/.test(color)) {
+        throw new Error("Color must be a 6-character hex. Ex: #ffffff, Not: " + String(color));
     }
-    if (!/^#([A-Fa-f0-9]{6})$/.test(params.lightTextColor)) {
+    if (!/^#([A-Fa-f0-9]{6})$/.test(lightTextColor)) {
         throw new Error("lightTextColor must be a 6-character hex. Ex: #ffffff, Not: " +
-            String(params.lightTextColor));
+            String(lightTextColor));
     }
-    if (!/^#([A-Fa-f0-9]{6})$/.test(params.darkTextColor)) {
+    if (!/^#([A-Fa-f0-9]{6})$/.test(darkTextColor)) {
         throw new Error("darkTextColor must be a 6-character hex. Ex: #ffffff, Not: " +
-            String(params.darkTextColor));
+            String(darkTextColor));
     }
-    var _a = generateVariantColors(params), base = _a.base, light = _a.light, dark = _a.dark;
+    var _d = generateVariantColors({
+        color: color,
+        lightTextColor: lightTextColor,
+        darkTextColor: darkTextColor,
+    }), base = _d.base, light = _d.light, dark = _d.dark;
     return {
         DEFAULT: base.color,
         text: base.text,
@@ -88,4 +92,4 @@ var generatePalette = function (_a) {
     }
     return palette;
 };
-export { generatePalette, hexToRgb };
+export { generatePalette, generateColor, hexToRgb };

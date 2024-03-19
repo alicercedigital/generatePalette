@@ -44,9 +44,6 @@ interface IColorComplete {
   dark: { DEFAULT: string; text: string };
 }
 
-interface IGenerateColorPalette {
-  (params: IParams): IColorComplete;
-}
 
 const getRgb: IGetRgb = (hexValue) =>
   parseInt(hexValue, 16) || Number(hexValue);
@@ -112,7 +109,7 @@ const generateVariantColors: IGenerateVariantColors = ({
   };
 };
 
-const generateColor: IGenerateColorPalette = ({
+const generateColor = ({
   color,
   lightTextColor = "#FFFFFF",
   darkTextColor = "#000000",
@@ -157,8 +154,12 @@ const generateColor: IGenerateColorPalette = ({
       DEFAULT: dark.color,
       text: dark.text,
     },
-  };
+  } satisfies RecursiveKeyValuePair
 };
+
+interface RecursiveKeyValuePair<K extends keyof any = string, V = string> {
+  [key: string]: V | RecursiveKeyValuePair<K, V>;
+}
 
 const generatePalette = <T extends { [colorName: string]: string }>({
   colors,
@@ -169,7 +170,7 @@ const generatePalette = <T extends { [colorName: string]: string }>({
   lightTextColor?: string;
   darkTextColor?: string;
 }) => {
-  type IPalette = { [colorName in keyof T]: IColorComplete };
+  type IPalette = { [colorName in keyof T]: RecursiveKeyValuePair };
 
   const palette: IPalette = {} as any;
 
@@ -178,7 +179,7 @@ const generatePalette = <T extends { [colorName: string]: string }>({
       color: colors[key],
       darkTextColor,
       lightTextColor,
-    });
+    }) 
   }
 
   return palette;
