@@ -112,29 +112,40 @@ const generateVariantColors: IGenerateVariantColors = ({
   };
 };
 
-const generateColor: IGenerateColorPalette = (params) => {
-  if (!/^#([A-Fa-f0-9]{6})$/.test(params.color)) {
+const generateColor: IGenerateColorPalette = ({
+  color,
+  lightTextColor = "#FFFFFF",
+  darkTextColor = "#000000",
+}: {
+  color: string;
+  lightTextColor: string;
+  darkTextColor: string;
+}) => {
+  if (!/^#([A-Fa-f0-9]{6})$/.test(color)) {
     throw new Error(
-      "Color must be a 6-character hex. Ex: #ffffff, Not: " +
-        String(params.color)
+      "Color must be a 6-character hex. Ex: #ffffff, Not: " + String(color)
     );
   }
 
-  if (!/^#([A-Fa-f0-9]{6})$/.test(params.lightTextColor)) {
+  if (!/^#([A-Fa-f0-9]{6})$/.test(lightTextColor)) {
     throw new Error(
       "lightTextColor must be a 6-character hex. Ex: #ffffff, Not: " +
-        String(params.lightTextColor)
+        String(lightTextColor)
     );
   }
 
-  if (!/^#([A-Fa-f0-9]{6})$/.test(params.darkTextColor)) {
+  if (!/^#([A-Fa-f0-9]{6})$/.test(darkTextColor)) {
     throw new Error(
       "darkTextColor must be a 6-character hex. Ex: #ffffff, Not: " +
-        String(params.darkTextColor)
+        String(darkTextColor)
     );
   }
 
-  const { base, light, dark } = generateVariantColors(params);
+  const { base, light, dark } = generateVariantColors({
+    color,
+    lightTextColor,
+    darkTextColor,
+  });
   return {
     DEFAULT: base.color,
     text: base.text,
@@ -149,16 +160,18 @@ const generateColor: IGenerateColorPalette = (params) => {
   };
 };
 
-const generatePalette = ({
+const generatePalette = <T extends { [colorName: string]: string }>({
   colors,
   lightTextColor = "#ffffff",
   darkTextColor = "#000000",
 }: {
-  colors: { [x: string]: string };
+  colors: T;
   lightTextColor?: string;
   darkTextColor?: string;
 }) => {
-  const palette: { [colorName: string]: IColorComplete } = {};
+  type IPalette = { [colorName in keyof T]: IColorComplete };
+
+  const palette: IPalette = {} as any;
 
   for (const key in colors) {
     palette[key] = generateColor({
@@ -171,4 +184,4 @@ const generatePalette = ({
   return palette;
 };
 
-export { generatePalette, hexToRgb };
+export { generatePalette, generateColor, hexToRgb };

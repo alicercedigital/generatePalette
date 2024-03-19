@@ -18,7 +18,6 @@ describe("generateColorPalette", () => {
   test("generates correct color palette", () => {
     const palette = generatePalette(params);
     console.log(palette);
-
     expect(palette.primary).toHaveProperty("DEFAULT");
     expect(palette.primary).toHaveProperty("text");
     expect(palette.primary).toHaveProperty("light");
